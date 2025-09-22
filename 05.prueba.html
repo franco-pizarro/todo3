@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enciclopedia de Autos</title>
+
+  <!-- EmailJS -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function(){
+      emailjs.init("zZsZ5uIbIGTo9q46d"); // Public Key
+    })();
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<style>
+    body {
+     font-family: 'Poppins', sans-serif;
+     margin: 0;
+     padding: 0; 
+     background: #fff;
+     color: #333;
+     transition: background 0.3s, color 0.3s;
+     }
+    header, footer {
+     background: #111;
+     color: #fff;
+     text-align: center; 
+     padding: 20px;
+     }
+    nav {
+     background: #222; 
+     display: flex;
+     justify-content:center;
+     gap: 20px;
+     padding: 10px; 
+     }
+    nav a {
+     color: #fff;
+     text-decoration: none;
+     font-weight: bold; 
+     }
+    nav a:hover { 
+     color: #a200ff;
+     }
+    main { 
+     padding: 20px;
+     }
+    section {
+     margin-bottom: 40px;
+     }
+    h2 {
+     color: #222;
+     border-bottom: 2px solid #ae00ff;
+     padding-bottom: 5px;
+     }
+    #search {
+     display: block;
+     margin: 20px auto;
+     padding: 10px;
+     width: 100%;
+     max-width: 350px;
+     border: 2px solid #a200ff;
+     border-radius: 8px;
+     outline: none;
+     }
+    .car-info {
+     background: #dbdbdb;
+     border-radius: 10px;
+     padding: 15px;
+     box-shadow:0 2px 6px rgba(0,0,0,0.2);
+     margin-bottom: 20px;
+     transition: transform 0.2s, box-shadow 0.2s;
+     }
+    .car-info:hover {
+     transform: scale(1.02);
+     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+     }
+    .timeline {
+     position: relative;
+     margin: 50px auto;
+     padding-left: 40px;
+     border-left: 4px solid #ffcc00;
+     max-width: 800px;
+     }
+    .event { 
+     position: relative;
+     margin-bottom: 30px;
+     padding: 10px 15px;
+     background: #fff;
+     border-radius: 10px; 
+     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+     transition: transform 0.2s, background 0.2s;
+     }
+    .event:hover {
+     transform: scale(1.03);
+     background: #fff8e1;
+     }
+    .event::before { 
+     position: absolute;
+     left: -14px;
+     top: 20px; 
+     width: 20px;
+     height: 20px;
+     background: #ffcc00;
+     border-radius: 50% border 2px solid #111;
+     }
+    .car-container, .tipos-container {
+     display: flex;
+     gap: 50px;
+     flex-wrap: wrap; 
+     }
+    .carousel { 
+     position: relative;
+     width: 100%;
+     max-width: 450px;
+     height: 300px;
+     overflow: hidden;
+     border-radius: 10px;
+     margin: auto;
+     }
+    .slides { 
+     display: flex;
+     transition: transform 0.5s ease-in-out;
+     }
+    .slides img {
+     width: 100%;
+     height: 300px;
+     object-fit: cover;
+     flex-shrink: 0;
+     }
+    .carousel button { 
+     position: absolute;
+     top: 50%;
+     transform: translateY(-50%); 
+     background: rgba(0,0,0,0.5); 
+     color: #fff;
+     border: none;
+     font-size: 24px;
+     padding: 5px 10px;
+     cursor: pointer;
+     border-radius: 5px; 
+     }
+    .carousel .prev { 
+     left: 10px;
+     }
+    .carousel .next { 
+     right: 10px;
+     }
+    #darkToggle {
+     position: fixed;
+     top: 15px;
+     right: 15px;
+     background: #a200ff;
+     color: #fff; 
+     border: none;
+     padding: 10px 15px;
+     border-radius: 8px;
+     cursor: pointer; 
+     font-weight: bold;
+     z-index: 999; 
+    }
+    #scrollTop {
+     display: none;
+     position: fixed;
+     bottom: 20px;
+     right: 20px;
+     background: #a200ff;
+     color: #fff;
+     border: none;
+     padding: 10px 15px;
+     border-radius: 50%;
+     cursor: pointer;
+     font-size: 18px;
+     z-index: 999;
+     }
+    .dark { 
+     background: #111;
+     color: #eee; 
+     }
+    .dark h2 {
+     color: #fff;
+     border-bottom-color: #ffcc00;
+     }
+    .dark .car-info { 
+     background: #222;
+     color: #eee;
+     }
+    .dark .event { 
+     background: #222;
+     }
+    .dark nav {
+     background: #000;
+     }
+    .dark nav a { 
+     color: #ffcc00;
+     }
+     @media (max-width: 768px) { .car-container, .tipos-container { flex-direction: column; gap: 20px; } .carousel { max-width: 100%; height: 220px; } }
+    #opinion form {
+     max-width: 500px;
+     margin: 0 auto;
+     display: flex;
+     flex-direction: column;
+     gap: 15px;
+     padding: 20px;
+     background: #f0f0f0;
+     border-radius: 10px;
+     }
+    #opinion .campo {
+     display: flex;
+     flex-direction: column;
+     }
+    #opinion label {
+     font-weight: 600;
+     margin-bottom: 5px;
+     color: #222;
+     font-size: 14px;
+     }
+    #opinion input[type="text"],
+    #opinion input[type="email"],
+    #opinion textarea {
+     padding: 10px;
+     border: 2px solid #a200ff; 
+     border-radius: 8px;
+     outline: none;
+     font-size: 14px;
+     transition: border 0.3s;
+     }
+    #opinion input[type="text"]:focus,
+    #opinion input[type="email"]:focus,
+    #opinion textarea:focus {
+     border-color: #ff00ff;
+     }
+    #opinion textarea {
+     min-height: 100px;
+     resize: vertical;
+     }
+    #opinion input[type="submit"] {
+     background: #a200ff;
+     color: #fff;
+     font-weight: bold;
+     border: none;
+     border-radius: 8px;
+     padding: 10px;
+     cursor: pointer;
+     font-size: 14px;
+     transition: background 0.3s;
+     }
+    #opinion input[type="submit"]:hover {
+     background: #ff00ff;
+     }
+    @media (max-width: 600px) {
+    #opinion form {
+     padding: 15px;
+    }
+    }
+</style>
+</head>
+<body>
+  <button id="darkToggle">🌙 Modo Oscuro</button>
+  <button id="scrollTop">⬆</button>
+  <header>
+    <h1>Enciclopedia de Autos</h1>
+    <p>Conoce la historia, evolución y datos curiosos del mundo automotriz</p>
+  </header>
+  <nav>
+    <a href="#historia">Historia</a>
+    <a href="#tipos">Tipos</a>
+    <a href="#fichas">Autos Famosos</a>
+    <a href="#opinion">Opinión</a>
+  </nav>
+  <main>
+    <!-- HISTORIA -->
+    <section id="historia">
+      <h2>Historia del Automóvil</h2>
+      <p>Desde los primeros inventos en el siglo XIX hasta la actualidad...</p>
+      <div class="timeline">
+        <div class="event"><h3>1886</h3><p>Karl Benz presenta el primer automóvil.</p></div>
+        <div class="event"><h3>1908</h3><p>Henry Ford introduce el Ford T en producción masiva.</p></div>
+        <div class="event"><h3>1950s</h3><p>Autos clásicos americanos como Chevrolet y Cadillac.</p></div>
+        <div class="event"><h3>1997</h3><p>Toyota Prius, primer híbrido en producción.</p></div>
+        <div class="event"><h3>2020s</h3><p>Tesla y Nissan lideran la era eléctrica.</p></div>
+      </div>
+    </section>
+    <!-- TIPOS -->
+    <section id="tipos">
+      <h2>Tipos de Autos</h2>
+      <div class="tipos-container">
+        <div class="car-info"><h3><a href="https://es.wikipedia.org/wiki/Autom%C3%B3vil_deportivo" target="_blank">Deportivos</a></h3><p>Diseñados para velocidad y rendimiento.</p></div>
+        <div class="car-info"><h3><a href="https://es.wikipedia.org/wiki/SUV" target="_blank">SUV</a></h3><p>Utilitarios deportivos para familias y terrenos difíciles.</p></div>
+        <div class="car-info"><h3><a href="https://es.wikipedia.org/wiki/Autom%C3%B3vil_el%C3%A9ctrico" target="_blank">Eléctricos</a></h3><p>Funcionan con energía eléctrica. Ejemplo: Tesla Model S.</p></div>
+      </div>
+    </section>
+    <!-- FICHAS -->
+    <section id="fichas">
+      <h2>Autos Famosos</h2>
+      <input type="text" id="search" placeholder="Buscar auto...">
+      <div class="car-container" id="carContainer"></div>
+    </section>
+ <div style="text-align: center; margin-top: 20px; display: flex; flex-direction: column; gap: 15px; align-items: center;">
+        <a href="https://www.coches.com/noticias/informes" target="_blank" style="font-weight:bold; color:#a200ff; text-decoration:none;">
+          👉 Ver más noticias e informes sobre autos en coches.com
+        </a>
+        <a href="https://www.autotrader.com/cars-for-sale" target="_blank" style="font-weight:bold; color:#a200ff; text-decoration:none;">
+          🛒 Ver autos en venta en Autotrader
+        </a>
+      </div>
+    <!-- FORMULARIO -->
+    <section id="opinion">
+      <h2>Déjanos tu Opinión</h2>
+      <form id="formulario">
+        <div class="campo"><label for="nombre">Nombre</label><input type="text" name="nombre" id="nombre" required></div>   
+        <div class="campo"><label for="mensaje">Mensaje</label><textarea name="mensaje" id="mensaje" required></textarea></div>
+        <div class="campo"><label for="email">Correo</label><input type="email" name="email" id="email" required></div>
+        <input type="submit" id="boton" value="Enviar correo">
+      </form>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2025 Enciclopedia de Autos</p>
+  </footer>
+  <!-- Scripts -->
+  <script>
+    const carsData = [
+      {
+        nombre: "Ford Mustang GT",
+        enlace: "https://es.wikipedia.org/wiki/Ford_Mustang",
+        descripcion: "Ícono americano con motor V8 de 5.0L y más de 450HP.",
+        imagenes: [
+          "https://images.coches.com/_vn_/ford/Mustang/e2a9f7954bd933e27b9e2738577fab02.jpg?w=768",
+          "https://images.coches.com/_vn_/ford/Mustang/82dfbe6d19cedc44b5722002fff54480.jpg?w=768",
+          "https://images.coches.com/_vn_/ford/Mustang/69691763e6e33d2b65e66de79dd9aa55.jpg?w=768",
+          "https://images.coches.com/_vn_/ford/Mustang/852eb449b6502dab7c790df61f413d48.jpg?w=768"
+        ]
+      },
+      {
+        nombre: "Ferrari 488",
+        enlace: "https://es.wikipedia.org/wiki/Ferrari_488",
+        descripcion: "Superdeportivo italiano con motor V8 biturbo.",
+        imagenes: [
+          "https://images.coches.com/_vn_/novitec/Rosso-Ferrari-488-GTB-N-Largo-2017/novitec_rosso-ferrari-488-gtb-n-largo-2017_r20.jpg?w=768",
+          "https://images.coches.com/_vn_/novitec/Rosso-Ferrari-488-GTB-N-Largo-2017/novitec_rosso-ferrari-488-gtb-n-largo-2017_r18.jpg?w=768",
+          "https://images.coches.com/_vn_/novitec/Rosso-Ferrari-488-GTB-N-Largo-2017/novitec_rosso-ferrari-488-gtb-n-largo-2017_r16.jpg?w=768",
+          "https://images.coches.com/_vn_/novitec/Rosso-Ferrari-488-GTB-N-Largo-2017/novitec_rosso-ferrari-488-gtb-n-largo-2017_r19.jpg?w=768"
+        ]
+      },
+      {
+        nombre: "Audi R8 Coupe",
+        enlace: "https://es.wikipedia.org/wiki/Audi_R8",
+        descripcion: "Superdeportivo con motor V10 y tracción integral.",
+        imagenes: [
+          "https://images.coches.com/_vn_/audi/R8-V10-Coupe-Ok-Chiptuning-2013/audi_r8-v10-coupe-ok-chiptuning-2013_r7.jpg?w=768",
+          "https://images.coches.com/_vn_/audi/R8-V10-Coupe-Ok-Chiptuning-2013/audi_r8-v10-coupe-ok-chiptuning-2013_r4.jpg?w=768",
+          "https://images.coches.com/_vn_/audi/R8-V10-Coupe-Ok-Chiptuning-2013/audi_r8-v10-coupe-ok-chiptuning-2013_r3.jpg?w=768",
+          "https://images.coches.com/_vn_/audi/R8-V10-Coupe-Ok-Chiptuning-2013/audi_r8-v10-coupe-ok-chiptuning-2013_r6.jpg?w=768"
+        ]
+      },
+      {
+        nombre: "BMW Serie 4 Gran Coupe",
+        enlace: "https://es.wikipedia.org/wiki/BMW_Serie_4",
+        descripcion: "Berlina deportiva con motor 2.0L cuatro cilindros.",
+        imagenes: [
+          "https://images.coches.com/_vn_/bmw/Serie-4-Gran-Coupe/da9e15c6a26c3d7423e6d6a6fa6eb3f6.jpg?w=768",
+          "https://images.coches.com/_vn_/bmw/Serie-4-Gran-Coupe/6f496ec1e0fb588634c4845cbf7102cb.jpg?w=768",
+          "https://images.coches.com/_vn_/bmw/Serie-4-Gran-Coupe/85028be5c8571681c8905222e3cc9202.jpg?w=768",
+          "https://images.coches.com/_vn_/bmw/Serie-4-Gran-Coupe/1549ea3da34905d992d03f6fd2f6b1aa.jpg?w=768"
+        ]
+      },
+       {
+     nombre: "Porsche 911 GT3 RS",
+      enlace: "https://es.wikipedia.org/wiki/Porsche_911",
+      descripcion: "Versión más extrema y orientada a circuito con motor atmosférico de 4.0 litros.",
+      imagenes: [
+        "https://images.coches.com/_vn_/porsche/911/3e05cdc4bcd7172f1e5ea0fe0c37fec7.jpg?w=768",
+        "https://images.coches.com/_vn_/porsche/911/ce2e91394ca24332c74d74e48129293f.jpg?w=768",
+        "https://images.coches.com/_vn_/porsche/911/b3d82ab8c37c919c6126999e00ea8f2b.jpg?w=768",
+        "https://images.coches.com/_vn_/porsche/911/a7e42599b00ea98e24b737557598fa39.jpg?w=768"
+      ]
+    },
+    {
+     nombre: "Maserati GranTurismo Folgore",
+      enlace: "https://es.wikipedia.org/wiki/Maserati_GranTurismo",
+      descripcion: "Es el primer gran turismo 100% eléctrico de la marca italiana.",
+      imagenes: [
+        "https://images.coches.com/_vn_/maserati/GranTurismo/a1e163c2704ff67f9cc1a26788f2d852.jpg?w=768",
+        "https://images.coches.com/_vn_/maserati/GranTurismo/d590a55488bdd15e6fd9a81187ecc4c7.jpg?w=768",
+        "https://images.coches.com/_vn_/maserati/GranTurismo/bf725ea64d53d9d371fa8a72edb5d07a.jpg?w=768",
+        "https://images.coches.com/_vn_/maserati/GranTurismo/c5f4a5de99f89d6f59141ebf9a48aba8.jpg?w=768"
+      ]
+    },
+    {
+     nombre: "Chevrolet Camaro quinta generación",
+      enlace: "https://es.wikipedia.org/wiki/Chevrolet_Camaro",
+      descripcion: "Combinando diseño retro con tecnología moderna y motor V8.",
+      imagenes: [
+        "https://images.coches.com/_vn_/chevrolet/Camaro-Black-Concept-2008/chevrolet_camaro-black-concept-2008_r5.jpg?w=768",
+        "https://images.coches.com/_vn_/chevrolet/Camaro-Black-Concept-2008/chevrolet_camaro-black-concept-2008_r4.jpg?w=768",
+        "https://images.coches.com/_vn_/chevrolet/Camaro-Black-Concept-2008/chevrolet_camaro-black-concept-2008_r2.jpg?w=768",
+        "https://images.coches.com/_vn_/chevrolet/Camaro-Black-Concept-2008/chevrolet_camaro-black-concept-2008_r1.jpg?w=768"
+      ]
+    },
+    {
+     nombre: "Bugatti Veyron Grand Sport",
+      enlace: "https://es.wikipedia.org/wiki/Bugatti_Veyron",
+      descripcion: "Un rendimiento excepcional con motor W16 de 8.0 litros.",
+      imagenes: [
+        "https://images.coches.com/_vn_/bugatti/Veyron-Grand-Sport-2009/bugatti_veyron-grand-sport-2009_r26.jpg?w=768",
+        "https://images.coches.com/_vn_/bugatti/Veyron-Grand-Sport-2009/bugatti_veyron-grand-sport-2009_r22.jpg?w=768",
+        "https://images.coches.com/_vn_/bugatti/Veyron-Grand-Sport-2009/bugatti_veyron-grand-sport-2009_r20.jpg?w=768",
+        "https://images.coches.com/_vn_/bugatti/Veyron-Grand-Sport-2009/bugatti_veyron-grand-sport-2009_r25.jpg?w=768"
+      ]
+    },
+    {
+     nombre: "Lamborghini Aventador",
+      enlace: "https://es.wikipedia.org/wiki/Lamborghini_Aventador",
+      descripcion: "Superdeportivo insignia de la marca italiana con motor V12 atmosférico de 6.5 litros.",
+      imagenes: [
+        "https://images.coches.com/_vn_/lamborghini/Aventador-LP700-4-2011/lamborghini_aventador-lp700-4-2011_r11.jpg?w=768",
+        "https://images.coches.com/_vn_/lamborghini/Aventador-LP700-4-2011/lamborghini_aventador-lp700-4-2011_r10.jpg?w=768",
+        "https://images.coches.com/_vn_/lamborghini/Aventador-LP700-4-2011/lamborghini_aventador-lp700-4-2011_r7.jpg?w=768",
+        "https://images.coches.com/_vn_/lamborghini/Aventador-LP700-4-2011/lamborghini_aventador-lp700-4-2011_r14.jpg?w=768"
+      ]
+    },
+    ];
+// Generar autos
+    function generarAutos() {
+      const container = document.getElementById("carContainer");
+      const searchInput = document.getElementById("search");
+
+      function mostrarAutos(filtro = "") {
+        container.innerHTML = "";
+        const autosFiltrados = carsData.filter(auto =>
+          auto.nombre.toLowerCase().includes(filtro.toLowerCase())
+        );
+
+        autosFiltrados.forEach((auto) => {
+          const card = document.createElement("div");
+          card.classList.add("car-info");
+
+          const titulo = document.createElement("h3");
+          const link = document.createElement("a");
+          link.href = auto.enlace;
+          link.target = "_blank";
+          link.textContent = auto.nombre;
+          titulo.appendChild(link);
+
+          const desc = document.createElement("p");
+          desc.textContent = auto.descripcion;
+
+          const carousel = document.createElement("div");
+          carousel.classList.add("carousel");
+
+          const slides = document.createElement("div");
+          slides.classList.add("slides");
+
+          auto.imagenes.forEach(imgUrl => {
+            const img = document.createElement("img");
+            img.src = imgUrl;
+            slides.appendChild(img);
+          });
+
+          const prev = document.createElement("button");
+          prev.classList.add("prev");
+          prev.textContent = "❮";
+
+          const next = document.createElement("button");
+          next.classList.add("next");
+          next.textContent = "❯";
+
+          carousel.appendChild(slides);
+          carousel.appendChild(prev);
+          carousel.appendChild(next);
+
+          card.appendChild(titulo);
+          card.appendChild(desc);
+          card.appendChild(carousel);
+          container.appendChild(card);
+
+          let currentIndex = 0;
+          function showSlide(n) {
+            const total = auto.imagenes.length;
+            currentIndex = (n + total) % total;
+            slides.style.transform = `translateX(-${currentIndex * 100}%)`;
+          }
+
+          prev.addEventListener("click", () => showSlide(currentIndex - 1));
+          next.addEventListener("click", () => showSlide(currentIndex + 1));
+
+          showSlide(0);
+        });
+      }
+      mostrarAutos();
+      searchInput.addEventListener("input", e => mostrarAutos(e.target.value));
+    }
+    document.addEventListener("DOMContentLoaded", generarAutos);
+// Modo oscuro
+    const toggle = document.getElementById("darkToggle");
+    toggle.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      toggle.textContent = document.body.classList.contains("dark") ? "☀ Modo Claro" : "🌙 Modo Oscuro";
+    });
+// Botón arriba
+    const scrollBtn = document.getElementById("scrollTop");
+    window.addEventListener("scroll", () => {
+      scrollBtn.style.display = window.scrollY > 200 ? "block" : "none";
+    });
+    scrollBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+// EmailJS
+    const btn = document.getElementById("boton");
+    document.getElementById("formulario").addEventListener("submit", function(event) {
+      event.preventDefault();
+      btn.value = "Enviando...";
+      const serviceID = "service_5yagf77";
+      const templateID = "template_yaqshg9";
+      const templateConfirm = "template_confirmacion";
+      emailjs.sendForm(serviceID, templateID, this)
+        .then(() => {
+          const params = {
+            nombre: document.getElementById("nombre").value,
+            email: document.getElementById("email").value
+          };
+          return emailjs.send(serviceID, templateConfirm, params);
+        })
+        .then(() => {
+          btn.value = "Enviar correo";
+          document.getElementById("formulario").reset();
+        }, (err) => {
+          btn.value = "Enviar correo";
+         alert("Correo enviado y confirmación recibida ✅");
+        });
+    });
+  </script>
+</body>
+</html>
